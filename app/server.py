@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -13,6 +14,15 @@ scaler = joblib.load(os.path.join(BASE_DIR, 'scaler.joblib'))
 label_encoders = joblib.load(os.path.join(BASE_DIR, 'label_encoders.joblib'))
 
 app = FastAPI()
+
+# Add CORS middleware - THIS IS THE CRITICAL FIX
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins (your React app can now connect)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allows all headers
+)
 
 class FlightData(BaseModel):
     DayOfWeek: int
